@@ -1,0 +1,828 @@
+/* ================================================================
+   TIMES TABLES LEARNER — style.css
+   ================================================================
+   Table of Contents
+   -----------------
+   1.  CSS Variables  ← EDIT COLOURS HERE
+   2.  Reset & Base
+   3.  Screen System
+   4.  Floating Decorative Stars
+   5.  Home Screen Layout
+   6.  Header / Title
+   7.  Selection Grid & Cards
+   8.  Bulk Buttons
+   9.  Warning Message
+   10. Start Button
+   11. Practice Screen Layout
+   12. Top Bar
+   13. Table Chips
+   14. Question Card
+   15. Answer Input
+   16. Feedback Message
+   17. Next Button
+   18. Confetti
+   19. Utilities
+   20. Animations
+   21. Responsive / Mobile
+   ================================================================ */
+
+
+/* ================================================================
+   1. CSS VARIABLES
+   ✏️  To change the colour scheme, edit the values below.
+      Every colour in the app flows from these variables.
+   ================================================================ */
+:root {
+  /* Primary brand colours */
+  --clr-primary:       #FF6B6B;   /* coral-red — main accent */
+  --clr-primary-dark:  #e55555;   /* darker hover state */
+  --clr-secondary:     #4ECDC4;   /* teal — secondary accent */
+  --clr-secondary-dark:#3ab5ac;
+
+  /* Background */
+  --clr-bg:            #FFF9F0;   /* warm cream page background */
+  --clr-bg-card:       #FFFFFF;   /* white cards */
+
+  /* Text */
+  --clr-text:          #2D3436;   /* near-black body text */
+  --clr-text-muted:    #636E72;   /* grey secondary text */
+  --clr-text-light:    #FFFFFF;   /* white text on dark buttons */
+
+  /* Feedback colours */
+  --clr-correct:       #00B894;   /* green for correct answers */
+  --clr-correct-bg:    #EAFAF6;
+  --clr-wrong:         #D63031;   /* red for wrong answers */
+  --clr-wrong-bg:      #FDECEA;
+  --clr-warning:       #FDCB6E;   /* amber for validation warning */
+  --clr-warning-bg:    #FFFBEE;
+  --clr-warning-border:#F9CA24;
+
+  /* Card & table selection */
+  --clr-card-border:   #E0E0E0;
+  --clr-selected-bg:   #FF6B6B;   /* selected card background */
+  --clr-selected-text: #FFFFFF;
+
+  /* Shadows */
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
+  --shadow-md: 0 4px 20px rgba(0,0,0,0.12);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.16);
+
+  /* Radius */
+  --radius-sm:  8px;
+  --radius-md:  16px;
+  --radius-lg:  24px;
+  --radius-xl:  32px;
+  --radius-full: 999px;
+
+  /* Fonts — controlled in one place */
+  --font-heading: 'Baloo 2', cursive;
+  --font-body:    'Nunito', sans-serif;
+
+  /* Transition speed */
+  --transition: 0.2s ease;
+}
+
+
+/* ================================================================
+   2. RESET & BASE
+   ================================================================ */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--clr-bg);
+  color: var(--clr-text);
+  min-height: 100vh;
+  /* Subtle dot-grid texture */
+  background-image: radial-gradient(circle, #e8e8e8 1px, transparent 1px);
+  background-size: 28px 28px;
+  overflow-x: hidden;
+}
+
+
+/* ================================================================
+   3. SCREEN SYSTEM
+   Only the .active screen is visible. JS toggles this class.
+   ================================================================ */
+.screen {
+  display: none;
+  min-height: 100vh;
+}
+
+.screen.active {
+  display: block;
+  animation: fadeIn 0.35s ease;
+}
+
+
+/* ================================================================
+   4. FLOATING DECORATIVE SHAPES (home screen only)
+   CSS circles — no emoji
+   ================================================================ */
+.deco {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.deco-star {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  opacity: 0.18;
+  animation: floatStar 8s ease-in-out infinite;
+}
+
+/* Each shape gets a colour and position */
+.s1 { top: 10%; left:  8%; background: var(--clr-primary);   animation-delay: 0s;   animation-duration: 7s; }
+.s2 { top: 20%; right: 5%; background: var(--clr-secondary); animation-delay: 1.5s; animation-duration: 9s;  width:24px; height:24px; }
+.s3 { top: 55%; left:  3%; background: var(--clr-primary);   animation-delay: 3s;   animation-duration: 8s;  width:12px; height:12px; }
+.s4 { top: 75%; right: 8%; background: var(--clr-secondary); animation-delay: 0.8s; animation-duration: 10s; }
+.s5 { top: 88%; left: 50%; background: var(--clr-primary);   animation-delay: 2.2s; animation-duration: 7s;  width:14px; height:14px; }
+
+
+/* ================================================================
+   5. HOME SCREEN LAYOUT
+   ================================================================ */
+#home-screen {
+  position: relative;
+}
+
+.home-wrap {
+  position: relative;
+  z-index: 1;
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 56px 24px 64px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 36px;
+}
+
+
+/* ================================================================
+   6. HEADER / TITLE
+   ================================================================ */
+.home-header {
+  text-align: center;
+}
+
+/* ============================================================
+   SITE TITLE — controlled by the .site-title class
+   To change the font size, edit font-size below.
+   ============================================================ */
+.site-title {
+  font-family: var(--font-heading);
+  font-size: clamp(2rem, 6vw, 3.2rem);
+  font-weight: 800;
+  color: var(--clr-primary);
+  line-height: 1.1;
+  /* Subtle text shadow for depth */
+  text-shadow: 3px 3px 0 rgba(255, 107, 107, 0.2);
+}
+
+
+/* ================================================================
+   7. SELECTION GRID & CARDS
+   ================================================================ */
+.selection-section {
+  width: 100%;
+}
+
+.section-label {
+  font-family: var(--font-heading);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--clr-text);
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+/* 4-column grid on desktop, 3-col on tablet, 2-col on small */
+.table-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+/* Each times-table toggle card */
+.table-card {
+  background: var(--clr-bg-card);
+  border: 2.5px solid var(--clr-card-border);
+  border-radius: var(--radius-md);
+  padding: 16px 8px;
+  text-align: center;
+  cursor: pointer;
+  transition:
+    background var(--transition),
+    border-color var(--transition),
+    transform var(--transition),
+    box-shadow var(--transition);
+  user-select: none;
+  /* No native button appearance */
+  -webkit-appearance: none;
+  appearance: none;
+  font-family: var(--font-body);
+}
+
+.table-card:hover {
+  border-color: var(--clr-primary);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.table-card:focus-visible {
+  outline: 3px solid var(--clr-primary);
+  outline-offset: 2px;
+}
+
+/* The big number, e.g. "7" */
+.card-number {
+  font-family: var(--font-heading);
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--clr-primary);
+  display: block;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+/* The "× table" label beneath */
+.card-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--clr-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* SELECTED state */
+.table-card.selected {
+  background: var(--clr-selected-bg);
+  border-color: var(--clr-selected-bg);
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: var(--shadow-md), 0 0 0 3px rgba(255,107,107,0.25);
+}
+
+.table-card.selected .card-number,
+.table-card.selected .card-label {
+  color: var(--clr-selected-text);
+}
+
+/* Tick mark on selected cards */
+.table-card.selected::after {
+  content: "✓";
+  display: block;
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.85);
+  margin-top: 4px;
+  font-weight: 800;
+}
+
+
+/* ================================================================
+   8. BULK BUTTONS (Select All / Clear All)
+   ================================================================ */
+.bulk-btns {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 4px;
+  flex-wrap: wrap;
+}
+
+
+/* ================================================================
+   9. WARNING MESSAGE
+   ================================================================ */
+.warning-msg {
+  margin-top: 16px;
+  padding: 12px 20px;
+  background: var(--clr-warning-bg);
+  border: 2px solid var(--clr-warning-border);
+  border-radius: var(--radius-md);
+  color: #856404;
+  font-weight: 700;
+  text-align: center;
+  font-size: 0.95rem;
+  animation: fadeIn 0.25s ease;
+}
+
+
+/* ================================================================
+   10. START BUTTON
+   ================================================================ */
+.start-wrap {
+  display: flex;
+  justify-content: center;
+}
+
+
+/* ================================================================
+   11. PRACTICE SCREEN LAYOUT
+   ================================================================ */
+#practice-screen {
+  background: linear-gradient(160deg, #FFF9F0 0%, #FFF0F3 100%);
+  background-image: radial-gradient(circle, #e8d8d8 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+.practice-wrap {
+  max-width: 580px;
+  margin: 0 auto;
+  padding: 28px 24px 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+
+/* ================================================================
+   12. TOP BAR (score + streak + quit)
+   ================================================================ */
+.top-bar {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.score-box,
+.streak-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--clr-bg-card);
+  border: 2px solid var(--clr-card-border);
+  border-radius: var(--radius-md);
+  padding: 8px 16px;
+  min-width: 80px;
+  box-shadow: var(--shadow-sm);
+}
+
+.score-label,
+.streak-label {
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--clr-text-muted);
+}
+
+.score-nums {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1.2;
+  color: var(--clr-primary);
+}
+
+.score-sep {
+  color: var(--clr-text-muted);
+  margin: 0 2px;
+}
+
+.streak-count {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #e17055;
+}
+
+/* Streak box pulses when streak > 0 */
+.streak-box.on-fire {
+  border-color: #fdcb6e;
+  background: #FFF8ED;
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
+.btn-quit {
+  margin-left: auto;
+}
+
+
+/* ================================================================
+   13. TABLE CHIPS ROW
+   ================================================================ */
+.chips-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+  width: 100%;
+}
+
+.chip {
+  background: var(--clr-secondary);
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 3px 10px;
+  border-radius: var(--radius-full);
+}
+
+
+/* ================================================================
+   14. QUESTION CARD
+   ================================================================ */
+.question-card {
+  background: var(--clr-bg-card);
+  border: 3px solid var(--clr-card-border);
+  border-radius: var(--radius-xl);
+  padding: 32px 40px;
+  text-align: center;
+  width: 100%;
+  box-shadow: var(--shadow-lg);
+  transition: transform 0.15s ease;
+}
+
+/* Shake animation triggers when wrong — added via JS */
+.question-card.shake {
+  animation: shake 0.4s ease;
+}
+
+/* Bounce in when a new question loads */
+.question-card.bounce-in {
+  animation: bounceIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.q-prompt {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--clr-text-muted);
+  margin-bottom: 8px;
+}
+
+.q-text {
+  font-family: var(--font-heading);
+  font-size: clamp(2.5rem, 10vw, 4rem);
+  font-weight: 800;
+  color: var(--clr-text);
+  line-height: 1.1;
+}
+
+
+/* ================================================================
+   15. ANSWER INPUT & SUBMIT BUTTON
+   ================================================================ */
+.answer-area {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+  max-width: 420px;
+}
+
+.answer-input {
+  flex: 1;
+  font-family: var(--font-heading);
+  font-size: 1.6rem;
+  font-weight: 700;
+  padding: 14px 18px;
+  border: 3px solid var(--clr-card-border);
+  border-radius: var(--radius-md);
+  background: var(--clr-bg-card);
+  color: var(--clr-text);
+  text-align: center;
+  transition: border-color var(--transition), box-shadow var(--transition);
+  /* Hide browser number spinners */
+  -moz-appearance: textfield;
+}
+
+.answer-input::-webkit-outer-spin-button,
+.answer-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+
+.answer-input:focus {
+  outline: none;
+  border-color: var(--clr-primary);
+  box-shadow: 0 0 0 4px rgba(255,107,107,0.18);
+}
+
+.answer-input::placeholder {
+  color: #ccc;
+  font-size: 1rem;
+  font-family: var(--font-body);
+}
+
+
+/* ================================================================
+   16. FEEDBACK MESSAGE
+   ================================================================ */
+.feedback-msg {
+  min-height: 52px;
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  font-family: var(--font-heading);
+  font-size: 1.3rem;
+  font-weight: 700;
+  text-align: center;
+  padding: 10px 20px;
+  transition: all var(--transition);
+}
+
+.feedback-msg.correct {
+  background: var(--clr-correct-bg);
+  color: var(--clr-correct);
+  border: 2px solid var(--clr-correct);
+  animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.feedback-msg.wrong {
+  background: var(--clr-wrong-bg);
+  color: var(--clr-wrong);
+  border: 2px solid var(--clr-wrong);
+  animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+
+/* ================================================================
+   17. NEXT BUTTON
+   ================================================================ */
+.btn-next {
+  font-size: 1.05rem;
+  padding: 14px 32px;
+  background: var(--clr-secondary);
+  color: #fff;
+  border: none;
+  animation: slideUp 0.3s ease;
+}
+
+.btn-next:hover {
+  background: var(--clr-secondary-dark);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+
+/* ================================================================
+   18. CONFETTI
+   ================================================================ */
+.confetti-wrap {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  z-index: 999;
+  overflow: hidden;
+}
+
+.confetti-piece {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  opacity: 0;
+  animation: confettiFall 1.2s ease-in forwards;
+}
+
+
+/* ================================================================
+   BASE BUTTON STYLES
+   All .btn variants share this foundation
+   ================================================================ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-family: var(--font-body);
+  font-weight: 800;
+  font-size: 0.95rem;
+  padding: 12px 24px;
+  border-radius: var(--radius-full);
+  border: 2.5px solid transparent;
+  cursor: pointer;
+  transition:
+    background var(--transition),
+    color var(--transition),
+    border-color var(--transition),
+    transform var(--transition),
+    box-shadow var(--transition);
+  text-decoration: none;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+/* Primary — coral red */
+.btn-primary {
+  background: var(--clr-primary);
+  color: var(--clr-text-light);
+  border-color: var(--clr-primary);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-primary:hover {
+  background: var(--clr-primary-dark);
+  border-color: var(--clr-primary-dark);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Extra large — for the big start button */
+.btn-xl {
+  font-size: 1.3rem;
+  padding: 18px 48px;
+  border-radius: var(--radius-full);
+  letter-spacing: 0.02em;
+}
+
+/* Ghost — outlined style for Select All / Clear All */
+.btn-ghost {
+  background: transparent;
+  border-color: var(--clr-card-border);
+  color: var(--clr-text-muted);
+}
+
+.btn-ghost:hover {
+  border-color: var(--clr-primary);
+  color: var(--clr-primary);
+  background: rgba(255,107,107,0.06);
+}
+
+/* Submit — coral, square-ish */
+.btn-submit {
+  background: var(--clr-primary);
+  color: #fff;
+  border-color: var(--clr-primary);
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  padding: 14px 22px;
+  flex-shrink: 0;
+}
+
+.btn-submit:hover {
+  background: var(--clr-primary-dark);
+  border-color: var(--clr-primary-dark);
+  transform: translateY(-1px);
+}
+
+/* Quit — small, muted */
+.btn-quit {
+  background: transparent;
+  border-color: var(--clr-card-border);
+  color: var(--clr-text-muted);
+  font-size: 0.85rem;
+  padding: 8px 16px;
+}
+
+.btn-quit:hover {
+  background: #f8f8f8;
+  border-color: #bbb;
+  color: var(--clr-text);
+}
+
+
+/* ================================================================
+   19. UTILITIES
+   ================================================================ */
+/* Screen-reader only — visually hidden but announced by assistive tech */
+.visually-hidden {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border: 0;
+}
+
+
+/* ================================================================
+   20. ANIMATIONS / KEYFRAMES
+   ================================================================ */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes popIn {
+  0%   { transform: scale(0.85); opacity: 0; }
+  100% { transform: scale(1);    opacity: 1; }
+}
+
+@keyframes bounceIn {
+  0%   { transform: scale(0.88); opacity: 0; }
+  70%  { transform: scale(1.04); }
+  100% { transform: scale(1);    opacity: 1; }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%       { transform: translateX(-8px); }
+  40%       { transform: translateX(8px); }
+  60%       { transform: translateX(-6px); }
+  80%       { transform: translateX(6px); }
+}
+
+@keyframes floatStar {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-18px); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50%       { transform: scale(1.04); }
+}
+
+@keyframes confettiFall {
+  0%   { opacity: 1; transform: translateY(-20px) rotate(0deg); }
+  100% { opacity: 0; transform: translateY(110vh) rotate(720deg); }
+}
+
+
+/* ================================================================
+   21. RESPONSIVE / MOBILE
+   ================================================================ */
+@media (max-width: 520px) {
+  .table-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+
+  .card-number {
+    font-size: 1.5rem;
+  }
+
+  .home-wrap {
+    padding: 32px 16px 48px;
+    gap: 28px;
+  }
+
+  .practice-wrap {
+    padding: 20px 16px 48px;
+    gap: 18px;
+  }
+
+  .question-card {
+    padding: 24px 24px;
+  }
+
+  .q-text {
+    font-size: 2.6rem;
+  }
+
+  .btn-xl {
+    font-size: 1.1rem;
+    padding: 16px 36px;
+  }
+
+  .answer-area {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .answer-input {
+    text-align: center;
+    font-size: 1.4rem;
+  }
+
+  .top-bar {
+    gap: 8px;
+  }
+
+  .score-box,
+  .streak-box {
+    padding: 6px 12px;
+    min-width: 68px;
+  }
+}
+
+@media (max-width: 380px) {
+  .table-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
