@@ -117,14 +117,14 @@ function newQuestion() {
   const a = tables[Math.floor(Math.random() * tables.length)];
   const b = Math.floor(Math.random() * 12) + 1;
 
-  state.currentA        = a;
-  state.currentB        = b;
+  state.currentA        = b;
+  state.currentB        = a;
   state.correctAnswer   = a * b;
   state.questionCounted = false;
   state.hadWrongAttempt = false;
   state.awaitingNext    = false;
 
-  questionText.textContent = `${b} \u00d7 ${a} = ?`;
+  questionText.textContent = `${a} \u00d7 ${b} = ?`;
   triggerBounce(questionCard);
 
   answerInput.value    = '';
@@ -168,7 +168,7 @@ function checkAnswer() {
       state.streak = 0;
     }
 
-    showFeedback('correct', `Correct! ${state.currentA} \u00d7 ${state.currentB} = ${state.correctAnswer}`);
+    showFeedback('correct', `Correct! ${state.currentB} \u00d7 ${state.currentA} = ${state.correctAnswer}`);
 
     state.awaitingNext   = true;
     answerInput.disabled = true;
