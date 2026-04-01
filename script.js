@@ -124,7 +124,7 @@ function newQuestion() {
   state.hadWrongAttempt = false;
   state.awaitingNext    = false;
 
-  questionText.textContent = `${a} \u00d7 ${b} = ?`;
+  questionText.textContent = `${b} \u00d7 ${a} = ?`;
   triggerBounce(questionCard);
 
   answerInput.value    = '';
